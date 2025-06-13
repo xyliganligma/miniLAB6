@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def gradientDescend(func, diffFunc, x0=1, speed=0.1, epochs=1000, tol=1e-6):
+    xList = []
+    yList = []
+    x = x0
+    for _ in range(epochs):
+        xList.append(x)
+        yList.append(func(x))
+        gradient = diffFunc(x)
+        x_new = x - speed * gradient
+      
+        if abs(x_new - x) < tol:
+            break
+        x = x_new
+    return xList, yList
+
+def plot_results(xList, yList, func):
+    x_vals = np.linspace(-1, 2, 100)
+    y_vals = func(x_vals)
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_vals, y_vals, label="f(x) = exp(-x) + x²")
+    plt.scatter(xList, yList, color='red', label='Точки градиентного спуска')
+    plt.plot(xList, yList, '--', color='red', alpha=0.3)
+    plt.scatter([xList[0]], [yList[0]], color='yellow', s=100, label='Начальная точка')
+    plt.scatter([xList[-1]], [yList[-1]], color='purple', s=100, label='Конечная точка')
+    plt.xlabel('x')
+    plt.ylabel('f(x)')
+    plt.title('Градиентный спуск')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+func = lambda x: np.exp(-x) + x ** 2
+diffFunc = lambda x: -np.exp(-x) + 2 * x
+
+xList, yList = gradientDescend(func, diffFunc, x0=1, speed=0.1, epochs=1000)
+print(f"Найденный минимум: x = {xList[-1]:.6f}, f(x) = {yList[-1]:.6f}")
+plot_results(xList, yList, func)
